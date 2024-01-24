@@ -1,0 +1,20 @@
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+spring:
+  datasource:
+    url: ENC(suujB7/NU8eCRrpoarb4EIAxB5fUkbGmQ4ifZkpa6xRbJELWtJmrBwa48cjnI1NPC0YNdD8CybitScDSukrEjvTE+Nh+Akbh0NLcZqAUiSY4FPwg0XeHNEgZCsc9/S+H)
+    username: ENC(wKkJnqpXVbfjsVGv3BTE+eAowOvuakOc)
+    password: ENC(L6SmRpZsH6wf+doRTmgeBkdsde7lo2OH)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+

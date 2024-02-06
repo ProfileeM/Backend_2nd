@@ -23,4 +23,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}

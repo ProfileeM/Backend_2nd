@@ -10,7 +10,7 @@ public class JasyptConfigTest {
     @Test
     @DisplayName("Jasypt 암호화 동작 테스트")
     void jasypt(){
-        String url = "jdbc:postgresql://localhost:5432/postgres";
+        String url = "jdbc:mysql://localhost:5432/postgres";
         String username = "postgres";
         String password = "1234";
 

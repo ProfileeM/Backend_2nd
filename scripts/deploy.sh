@@ -25,4 +25,6 @@ chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
+export JASYPT_ENCRYPTOR_PASSWORD=$(aws ssm get-parameter --name /profileem/JASYPT_ENCRYPTOR_PASSWORD --query Parameter.Value --output text)
+
 nohup java -jar -Duser.timezone=Asia/Seoul -Djasypt.encryptor.password=$JASYPT_ENCRYPTOR_PASSWORD $JAR_NAME >> $REPOSITORY/nohup.out 2>&1 &

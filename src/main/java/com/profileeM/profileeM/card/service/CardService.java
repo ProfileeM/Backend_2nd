@@ -1,5 +1,10 @@
 package com.profileeM.profileeM.card.service;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.profileeM.profileeM.card.domain.Card;
 import com.profileeM.profileeM.card.domain.dto.CardRequest;
 import com.profileeM.profileeM.card.domain.dto.CardResponse;
@@ -10,6 +15,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +27,13 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
-    public Card createCard(CardRequest cardRequest, Long userId) {
+    public Card createCard(CardRequest cardRequest, Long userId) throws IOException, WriterException {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 ID입니다."));
 
-        // QR 코드 생성 로직 (예시) => 수정해야함
-        String qrCode = "GeneratedQRCode-" + System.currentTimeMillis();
+        // QR 코드 생성
+        String img = getQRCodeImage("qrcode", 200, 200);
 
         Card card = Card.builder()
                 .user(user) // User 엔티티 설정
@@ -38,11 +46,22 @@ public class CardService {
                 .food(cardRequest.getFood())
                 .drink(cardRequest.getDrink())
                 .interest(cardRequest.getInterest())
-                .qr(qrCode) // QR 코드 설정
+                .qr(img) // QR 코드 설정
                 .theme(cardRequest.getTheme())
                 .build();
 
         return cardRepository.save(card);
+    }
+
+    public String getQRCodeImage(String url, int width, int height) throws IOException, WriterException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+
+        return Base64.getEncoder().encodeToString(pngOutputStream.toByteArray());
     }
 
     public void deleteCard(Long cardId) {

@@ -1,5 +1,6 @@
 package com.profileeM.profileeM.card.controller;
 
+import com.google.zxing.WriterException;
 import com.profileeM.profileeM.ApiResponse;
 import com.profileeM.profileeM.card.domain.Card;
 import com.profileeM.profileeM.card.domain.dto.*;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +26,7 @@ public class CardController {
 
 
     @PostMapping//내 프로필 카드 등록
-    public ResponseEntity<ApiResponse<CardResponse>> createCard(@RequestBody CardRequest cardRequest) {
+    public ResponseEntity<ApiResponse<CardResponse>> createCard(@RequestBody CardRequest cardRequest) throws IOException, WriterException {
         // QR 코드 생성은 서비스 레이어 내부에서 처리
         Long userId = jwtAuthenticationProvider.getUserId();
 

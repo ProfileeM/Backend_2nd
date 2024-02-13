@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/group")
 @RequiredArgsConstructor
 @Slf4j
-public class GroupController extends ApiResponse<Group> {
+public class GroupController {
 
     private final GroupService groupService;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;

@@ -6,6 +6,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter // 이거 안쓰고 수정
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 필수값 누락 막음
@@ -42,4 +43,5 @@ public class Card {
     private String qr;
 
     private int theme;
+
 }

@@ -1,7 +1,8 @@
-package com.profileeM.profileeM.user.Controller;
+package com.profileeM.profileeM.user.controller;
 
 import com.profileeM.profileeM.user.domain.dto.LoginResponse;
 import com.profileeM.profileeM.user.service.OAuthService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

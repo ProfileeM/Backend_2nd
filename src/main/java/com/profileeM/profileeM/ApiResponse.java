@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -27,4 +28,5 @@ public class ApiResponse<T> {
                 .data(data)
                 .build();
     }
+
 }

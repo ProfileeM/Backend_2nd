@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CardRequest {
-    private User user; // Simplified for example; typically, you'd pass userId and resolve User entity
     private String name;
     private String intro;
     private String birth;

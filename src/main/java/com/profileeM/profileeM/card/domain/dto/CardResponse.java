@@ -20,9 +20,7 @@ public class CardResponse {
     private String drink;
     private String interest;
     private int theme;
-    // other fields
 
-    // Card 엔티티로부터 CardResponse 객체를 생성하는 정적 메서드
     public static CardResponse from(Card card) {
         CardResponse response = new CardResponse();
         response.setCardId(card.getCardId());

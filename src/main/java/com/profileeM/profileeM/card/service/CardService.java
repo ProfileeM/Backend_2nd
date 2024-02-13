@@ -4,12 +4,12 @@ import com.profileeM.profileeM.card.domain.Card;
 import com.profileeM.profileeM.card.domain.dto.CardRequest;
 import com.profileeM.profileeM.card.domain.dto.CardResponse;
 import com.profileeM.profileeM.card.repository.CardRepository;
+import com.profileeM.profileeM.user.domain.User;
+import com.profileeM.profileeM.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,12 +18,17 @@ import java.util.Optional;
 public class CardService {
 
     private final CardRepository cardRepository;
-    public Card createCard(CardRequest cardRequest) {
-        // QR 코드 생성 로직 (예시) => 수정
+    private final UserRepository userRepository;
+    public Card createCard(CardRequest cardRequest, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 ID입니다."));
+
+        // QR 코드 생성 로직 (예시) => 수정해야함
         String qrCode = "GeneratedQRCode-" + System.currentTimeMillis();
 
         Card card = Card.builder()
-                .user(cardRequest.getUser())
+                .user(user) // User 엔티티 설정
                 .name(cardRequest.getName())
                 .intro(cardRequest.getIntro())
                 .birth(cardRequest.getBirth())
@@ -45,8 +50,9 @@ public class CardService {
 
     }
 
-    public List<Card> findAllCards() {
-        return cardRepository.findAll();
+    // 사용자 ID에 해당하는 카드를 모두 조회
+    public List<Card> findAllCardsByUserId(Long userId) {
+        return cardRepository.findByUserUserId(userId);
     }
 
     public Optional<Card> findCardById(Long cardId) {

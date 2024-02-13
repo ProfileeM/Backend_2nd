@@ -1,4 +1,4 @@
-package com.profileeM.profileeM;
+package com.profileeM.profileeM.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

@@ -17,3 +17,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+# 카카오 로그인
+oauth:
+  kakao:
+    client-id: ENC(I9wzpFokjOb81FwamDGcIVNGN/Glvf5O4EqW1sqeDEWHf/sQKEzC+NJ0pLzJIVMW)
+
+# JWT
+jwt:
+  secret: ENC(dS6V4JdtwAD8yoYS8Q5ITfA8x6ISh8lpzyg0Kmugv5/fIx9XbcogysIO5gXjYO95VYYe25RH3YqS5dbc0FMyTECUpbYxqLsYuNBZHvHMavJomDFYBYNhHVVgx/+VHcZvQe8+kOl3ubsDFwlbK/B0Fme+VMvNsxsIuTD+V1Idw2B7yK2oqz39HcCNIeuEXK3g)
+  access-token-time: ENC(GFJGY3aTNUjw9Qa/jsQw6HwsJf2od/68)
+  refresh-token-time: ENC(Cc6L5/OIscF0pLqvZ9KshM8xHMPiDP5M)

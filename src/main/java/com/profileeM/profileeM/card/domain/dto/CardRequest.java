@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CardRequest {
+
     private String name;
     private String intro;
     private String birth;
@@ -18,6 +19,5 @@ public class CardRequest {
     private String food;
     private String drink;
     private String interest;
-    private String qr;
     private int theme;
 }

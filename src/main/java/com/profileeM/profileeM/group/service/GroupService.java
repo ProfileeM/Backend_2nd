@@ -1,8 +1,8 @@
 package com.profileeM.profileeM.group.service;
 
 import com.profileeM.profileeM.group.domain.Group;
+import com.profileeM.profileeM.group.domain.RequestGroupDTO;
 import com.profileeM.profileeM.group.repository.GroupRepository;
-import com.profileeM.profileeM.jwt.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,14 +19,14 @@ public class GroupService {
     private final GroupRepository groupRepository;
 
     // 그룹 생성
-    public Group createGroup(Group group, Long userId) {
+    public Group createGroup(RequestGroupDTO requestGroupDTO, Long userId) {
 
         Group newGroup = Group.builder()
-                .groupName(group.getGroupName())
-                .theme(group.getTheme())
+                .groupName(requestGroupDTO.getGroupName())
+                .theme(requestGroupDTO.getTheme())
                 .userId(userId)
                 .groupDate(new Date())
-                .link(group.getLink())
+                .link("생성된 링크")
                 .build();
         
         return groupRepository.save(newGroup);

@@ -4,10 +4,7 @@ import com.profileeM.profileeM.ApiResponse;
 import com.profileeM.profileeM.jwt.JwtAuthenticationProvider;
 import com.profileeM.profileeM.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,5 +18,12 @@ public class WalletController {
     public ApiResponse<?> addCard(@PathVariable(name = "cardId") Long cardId) {
         Long userId = jwtAuthenticationProvider.getUserId();
         return ApiResponse.ok(walletService.addCard(cardId, userId));
+    }
+
+    // 지갑에서 프로필 카드 삭제
+    @DeleteMapping("/card/{cardId}")
+    public ApiResponse<?> removeCard(@PathVariable(name = "cardId") Long cardId) {
+        Long userId = jwtAuthenticationProvider.getUserId();
+        return ApiResponse.ok(walletService.removeCard(cardId, userId));
     }
 }

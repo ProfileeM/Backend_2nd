@@ -6,6 +6,7 @@ import com.profileeM.profileeM.wallet.domain.Wallet;
 import com.profileeM.profileeM.wallet.domain.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,5 +21,12 @@ public class WalletService {
                         .card(cardRepository.findByCardId(cardId))
                         .user(userRepository.findByUserId(userId))
                         .build());
+    }
+
+    @Transactional
+    public String removeCard(Long cardId, Long userId) {
+        Wallet remove = walletRepository.findByCardCardIdAndUserUserId(cardId, userId);
+        walletRepository.delete(remove);
+        return "삭제완료";
     }
 }

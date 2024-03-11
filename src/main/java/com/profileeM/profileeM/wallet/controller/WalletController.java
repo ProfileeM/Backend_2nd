@@ -26,4 +26,11 @@ public class WalletController {
         Long userId = jwtAuthenticationProvider.getUserId();
         return ApiResponse.ok(walletService.removeCard(cardId, userId));
     }
+
+    // 프로필 카드들 조회 (목록)
+    @GetMapping("/cards")
+    public ApiResponse<?> getFriendCards() {
+        Long userId = jwtAuthenticationProvider.getUserId();
+        return ApiResponse.ok(walletService.getFriendCards(userId));
+    }
 }

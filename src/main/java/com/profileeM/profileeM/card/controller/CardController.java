@@ -24,7 +24,6 @@ public class CardController {
     private final CardService cardService;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
-
     @PostMapping//내 프로필 카드 등록
     public ResponseEntity<ApiResponse<CardResponse>> createCard(@RequestBody CardRequest cardRequest) throws IOException, WriterException {
         // QR 코드 생성은 서비스 레이어 내부에서 처리

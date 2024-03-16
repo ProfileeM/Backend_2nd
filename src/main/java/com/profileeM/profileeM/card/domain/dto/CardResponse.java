@@ -19,7 +19,8 @@ public class CardResponse {
     private String food;
     private String drink;
     private String interest;
-    private int theme;
+    private String frontImageBase64; // 카드 앞면 이미지를 Base64로 저장할 필드
+    private String qr; // QR 코드 링크를 저장할 필드
 
     public static CardResponse from(Card card) {
         CardResponse response = new CardResponse();
@@ -33,7 +34,9 @@ public class CardResponse {
         response.setFood(card.getFood());
         response.setDrink(card.getDrink());
         response.setInterest(card.getInterest());
-        response.setTheme(card.getTheme());
+        response.setFrontImageBase64(card.getFrontImageBase64()); // 카드 앞면 이미지를 Base64로 설정
+        response.setQr(card.getQr()); // QR 코드 링크 설정
+
         return response;
     }
 }

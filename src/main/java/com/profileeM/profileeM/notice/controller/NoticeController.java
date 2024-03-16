@@ -46,6 +46,7 @@ public class NoticeController {
     @PostMapping("/")
     public ApiResponse<?> createNotice(@RequestBody Notice notice) {
         Notice createdNotice = noticeService.createNotice(notice);
+        noticeService.updateNoticeListCache();
         return ApiResponse.ok(createdNotice);
     }
 }

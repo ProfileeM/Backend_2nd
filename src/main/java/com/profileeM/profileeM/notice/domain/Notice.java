@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @AllArgsConstructor
@@ -24,12 +25,12 @@ public class Notice {
     private String content;
 
     @Column(name = "creation_date ")
-    private LocalDateTime creationDate;
+    private Date creationDate;
 
     @Builder
     public Notice(String title, String content) {
         this.title = title;
         this.content = content;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = new Date();
     }
 }

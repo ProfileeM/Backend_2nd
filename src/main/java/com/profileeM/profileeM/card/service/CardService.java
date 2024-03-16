@@ -64,7 +64,7 @@ public class CardService {
                 .food(cardRequest.getFood())
                 .drink(cardRequest.getDrink())
                 .interest(cardRequest.getInterest())
-                .qr(img) // base64 인코딩
+                .frontImageBase64(cardRequest.getFrontImageBase64())
                 .qrImage(qrImage) // QR 코드 이미지 설정
                 .keyword1(selectedKeywords.get(0)) // 첫 번째 키워드 설정
                 .keyword2(selectedKeywords.get(1)) // 두 번째 키워드 설정

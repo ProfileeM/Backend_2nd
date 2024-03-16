@@ -19,4 +19,5 @@ public class CardRequest {
     private String food;
     private String drink;
     private String interest;
+    private String frontImageBase64;
 }

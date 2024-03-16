@@ -39,9 +39,25 @@ public class Card {
 
     private String interest;
 
-    @Column(length = 1000)
+    @Column(length = 1000) //qr링크
     private String qr;
 
-    private int theme;
+    //qr 이미지를 바이트 배열로 저장
+    @Lob
+    @Column(name = "qr_image", columnDefinition = "BLOB")
+    private byte[] qrImage;
+
+    // 카드 앞면 이미지를 Base64로 인코딩하여 저장할 칼럼 추가
+    @Column(name = "front_image", length = 2000000) // 길이는 Base64 인코딩 후 크기에 따라 조절
+    private String frontImageBase64;
+
+    // 4가지 키워드 저장을 위한 컬럼 추가
+    private String keyword1;
+
+    private String keyword2;
+
+    private String keyword3;
+
+    private String keyword4;
 
 }

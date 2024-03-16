@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -27,13 +25,33 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
-    public Card createCard(CardRequest cardRequest, Long userId) throws IOException, WriterException {
 
+    //카드 생성 (등록)
+    public Card createCard(CardRequest cardRequest, Long userId) throws IOException, WriterException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 ID입니다."));
 
         // QR 코드 생성
         String img = getQRCodeImage("qrcode", 200, 200);
+
+        // QR 코드 이미지를 byte 배열로 저장
+        byte[] qrImage = generateQRCodeImageBytes("qrcode", 200, 200);
+
+        // 사용할 키워드들을 리스트에 추가
+        List<String> keywords = new ArrayList<>();
+        keywords.add(cardRequest.getMbti());
+        keywords.add(cardRequest.getFood());
+        keywords.add(cardRequest.getDrink());
+        keywords.add(cardRequest.getInterest());
+
+        // 키워드를 섞어줌
+        Collections.shuffle(keywords);
+
+        // 카드에 저장할 키워드 개수 설정
+        int numKeywordsToUse = 4;
+
+        // 무작위로 선택된 키워드들을 리스트에 저장
+        List<String> selectedKeywords = keywords.subList(0, numKeywordsToUse);
 
         Card card = Card.builder()
                 .user(user) // User 엔티티 설정
@@ -46,8 +64,12 @@ public class CardService {
                 .food(cardRequest.getFood())
                 .drink(cardRequest.getDrink())
                 .interest(cardRequest.getInterest())
-                .qr(img) // QR 코드 설정
-                .theme(cardRequest.getTheme())
+                .qr(img) // base64 인코딩
+                .qrImage(qrImage) // QR 코드 이미지 설정
+                .keyword1(selectedKeywords.get(0)) // 첫 번째 키워드 설정
+                .keyword2(selectedKeywords.get(1)) // 두 번째 키워드 설정
+                .keyword3(selectedKeywords.get(2)) // 세 번째 키워드 설정
+                .keyword4(selectedKeywords.get(3)) // 네 번째 키워드 설정
                 .build();
 
         return cardRepository.save(card);
@@ -64,6 +86,25 @@ public class CardService {
         return Base64.getEncoder().encodeToString(pngOutputStream.toByteArray());
     }
 
+    // QR 코드 이미지를 byte 배열로 반환하는 메서드
+    public byte[] generateQRCodeImageBytes(String url, int width, int height) throws WriterException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
+
+        int matrixWidth = bitMatrix.getWidth();
+        int matrixHeight = bitMatrix.getHeight();
+
+        byte[] qrCodeBytes = new byte[matrixWidth * matrixHeight];
+
+        for (int y = 0; y < matrixHeight; y++) {
+            for (int x = 0; x < matrixWidth; x++) {
+                qrCodeBytes[y * matrixWidth + x] = (byte) (bitMatrix.get(x, y) ? 1 : 0);
+            }
+        }
+
+        return qrCodeBytes;
+    }
+
     public void deleteCard(Long cardId) {
         cardRepository.deleteById(cardId);
 
@@ -78,7 +119,6 @@ public class CardService {
         return cardRepository.findById(cardId);
     }
 
-    @Transactional
     public CardResponse updateCard(Long cardId, CardRequest cardRequest) {
         Optional<Card> cardOptional = cardRepository.findById(cardId);
         if (cardOptional.isPresent()) {
@@ -102,7 +142,6 @@ public class CardService {
         card.setFood(cardRequest.getFood());
         card.setDrink(cardRequest.getDrink());
         card.setInterest(cardRequest.getInterest());
-        card.setTheme(cardRequest.getTheme());
     }
 }
 

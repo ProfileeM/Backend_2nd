@@ -19,5 +19,4 @@ public class CardRequest {
     private String food;
     private String drink;
     private String interest;
-    private int theme;
 }

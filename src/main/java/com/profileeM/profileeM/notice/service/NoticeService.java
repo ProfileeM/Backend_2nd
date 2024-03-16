@@ -3,6 +3,8 @@ package com.profileeM.profileeM.notice.service;
 import com.profileeM.profileeM.notice.domain.Notice;
 import com.profileeM.profileeM.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +15,27 @@ import java.util.Optional;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private final String NOTICE_LIST_CACHE_KEY = "NoticeList";
 
     public List<Notice> findAllNotices() {
-        return noticeRepository.findAll();
+        // Redis 캐시에 공지사항 리스트가 있는지 확인
+        List<Notice> cachedNotices = (List<Notice>) redisTemplate.opsForValue().get(NOTICE_LIST_CACHE_KEY);
+        if (cachedNotices != null) {
+            return cachedNotices;
+        } else {
+            // Redis 캐시에 없으면 데이터베이스에서 조회하고 캐시에 저장
+            List<Notice> notices = noticeRepository.findAll();
+            redisTemplate.opsForValue().set(NOTICE_LIST_CACHE_KEY, notices);
+            return notices;
+        }
+    }
+
+    @Async
+    public void updateNoticeListCache(){
+        List<Notice> notices = noticeRepository.findAll();
+        redisTemplate.opsForValue().set(NOTICE_LIST_CACHE_KEY, notices);
     }
 
     public Notice createNotice(Notice notice){

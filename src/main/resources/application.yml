@@ -19,6 +19,10 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Asia/Seoul
+  data:
+    redis:
+      host: ENC(vk0aMA/mgJIgxfAMuHcl4vL+tnfXHdLu1yaT9MIE25nSNZbNjcim8ydnDv3z5g2ztk2orm63rlymxdAwY74PdwmOYefWkd/x)
+      port: 6379
 
 # 카카오 로그인
 oauth:

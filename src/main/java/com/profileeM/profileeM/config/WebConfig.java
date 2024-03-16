@@ -10,7 +10,8 @@ public class WebConfig implements WebMvcConfigurer { // CORS 설정
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("")
+                .allowedOrigins("http://192.168.45.142:8082")
+                .allowedOrigins("http://localhost:3000") // web 테스트용
                 .allowedMethods("GET", "POST", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

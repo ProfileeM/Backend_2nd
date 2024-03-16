@@ -9,4 +9,5 @@ import java.util.*;
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findByUserUserId(Long userId);
+    Card findByCardId(Long cardId);
 }

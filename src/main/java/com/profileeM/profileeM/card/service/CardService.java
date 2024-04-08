@@ -13,11 +13,15 @@ import com.profileeM.profileeM.user.domain.User;
 import com.profileeM.profileeM.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +29,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     //카드 생성 (등록)
     public Card createCard(CardRequest cardRequest, Long userId) throws IOException, WriterException {
@@ -32,7 +37,7 @@ public class CardService {
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 ID입니다."));
 
         // QR 코드 생성
-        String img = getQRCodeImage("qrcode", 200, 200);
+//        String img = getQRCodeImage("qrcode", 200, 200);
 
         // QR 코드 이미지를 byte 배열로 저장
         byte[] qrImage = generateQRCodeImageBytes("qrcode", 200, 200);
@@ -75,7 +80,7 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public String getQRCodeImage(String url, int width, int height) throws IOException, WriterException {
+    public String getQRCodeImage(String url, String key, int width, int height) throws IOException, WriterException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
 
@@ -142,5 +147,25 @@ public class CardService {
         card.setFood(cardRequest.getFood());
         card.setDrink(cardRequest.getDrink());
         card.setInterest(cardRequest.getInterest());
+    }
+
+    private String createQRCode(String url, Long cardId) throws IOException, WriterException {
+        // 랜덤한 숫자로 키 생성
+        String key = generateRandomKey();
+
+        // QR 코드 생성
+        String qrImage = getQRCodeImage(url, key, 250, 350);
+
+        // Redis에 저장
+        redisTemplate.opsForValue().set(key, String.valueOf(cardId));
+        redisTemplate.expire(key, 150, TimeUnit.SECONDS); // TTL 설정 (2분 30초)
+
+        return qrImage;
+    }
+
+    private String generateRandomKey() {
+        Random random = new Random();
+        int randomNumber = 100000 + random.nextInt(900000);
+        return String.valueOf(randomNumber);
     }
 }

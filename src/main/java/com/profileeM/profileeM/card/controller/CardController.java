@@ -75,5 +75,8 @@ public class CardController {
             return ResponseEntity.notFound().build();
         }
     }
+//
+//    @GetMapping("/{cardId}/qrcode") // QR 코드 생성 요청
+//    public ResponseEntity<ApiResponse<CardResponse>>
 
 }

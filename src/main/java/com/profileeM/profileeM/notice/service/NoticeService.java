@@ -46,4 +46,33 @@ public class NoticeService {
     public Optional<Notice> findNoticeById(Long noticeId) {
         return noticeRepository.findById(noticeId);
     }
+
+    public Optional<Notice> updateNotice(Long noticeId, Notice updatedNotice){
+        Optional<Notice> existingNoticeOptional = noticeRepository.findById(noticeId);
+
+        if(existingNoticeOptional.isPresent()){
+            Notice existingNotice = existingNoticeOptional.get();
+            existingNotice = Notice.builder()
+                    .noticeId(existingNotice.getNoticeId())
+                    .title(updatedNotice.getTitle())
+                    .content(updatedNotice.getContent())
+                    .build();
+            return Optional.of(noticeRepository.save(existingNotice));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
+    public boolean deleteNotice(Long noticeId){
+        Optional<Notice> existingNoticeOptional = noticeRepository.findById(noticeId);
+
+        if(existingNoticeOptional.isPresent()){
+            noticeRepository.delete(existingNoticeOptional.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

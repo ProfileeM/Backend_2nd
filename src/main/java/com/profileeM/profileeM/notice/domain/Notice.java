@@ -33,4 +33,15 @@ public class Notice {
         this.content = content;
         this.creationDate = new Date();
     }
+
+    // NoticeTitleDateDTO 추가
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class NoticeTitleDateDTO {
+        private Long noticeId;
+        private String title;
+        private Date creationDate;
+    }
 }

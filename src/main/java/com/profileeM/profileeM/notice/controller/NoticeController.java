@@ -25,10 +25,10 @@ public class NoticeController {
 
     // 모든 공지사항 조회
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Notice>>> getAllNotices() {
-        List<Notice> notices = noticeService.findAllNotices();
+    public ResponseEntity<ApiResponse<List<Notice.NoticeTitleDateDTO>>> getAllNotices() {
+        List<Notice.NoticeTitleDateDTO> notices = noticeService.findAllNoticeTitleDates();
 //        log.info("Notices\n조회한 userId: {}", jwtAuthenticationProvider.getUserId());
-        ApiResponse<List<Notice>> response = ApiResponse.ok(notices);
+        ApiResponse<List<Notice.NoticeTitleDateDTO>> response = ApiResponse.ok(notices);
         return ResponseEntity.ok(response);
     }
 
@@ -49,7 +49,6 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<ApiResponse<Notice>> createNotice(@RequestBody Notice notice) {
         Notice createdNotice = noticeService.createNotice(notice);
-        noticeService.updateNoticeListCache();
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(createdNotice)); // 201 Created
     }
 

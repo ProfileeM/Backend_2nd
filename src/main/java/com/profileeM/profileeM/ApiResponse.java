@@ -13,20 +13,23 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    public static <T> ApiResponse<T> ok() {
-        return (ApiResponse<T>) ApiResponse.builder()
-                .status(HttpStatus.OK)
-                .message("성공")
-                .data(null)
-                .build();
-    }
-
-    public static <T> ApiResponse<T> ok(T data) {
-        return (ApiResponse<T>) ApiResponse.builder()
-                .status(HttpStatus.OK)
-                .message("성공")
+    public static <T> ApiResponse<T> of(HttpStatus status, String message, T data) {
+        return ApiResponse.<T>builder()
+                .status(status)
+                .message(message)
                 .data(data)
                 .build();
     }
 
+    public static <T> ApiResponse<T> ok() {
+        return of(HttpStatus.OK, "성공", null);
+    }
+
+    public static <T> ApiResponse<T> ok(T data) {
+        return of(HttpStatus.OK, "성공", data);
+    }
+
+    public static <T> ApiResponse<T> error(HttpStatus status, String message) {
+        return of(status, message, null);
+    }
 }

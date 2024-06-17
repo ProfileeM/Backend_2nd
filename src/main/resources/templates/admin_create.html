@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ProfileeM 관리자 페이지</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+            <span class="fs-4">ProfileeM 관리자 페이지</span>
+        </a>
+
+        <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Features</a>
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Enterprise</a>
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Support</a>
+            <a class="py-2 link-body-emphasis text-decoration-none" href="#">Pricing</a>
+        </nav>
+    </div>
+
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+        <h1 class="display-4 fw-normal text-body-emphasis">공지사항 관리</h1>
+        <p class="fs-5 text-body-secondary">공지사항을 생성, 수정, 삭제할 수 있습니다.</p>
+    </div>
+</header>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <article>
+                <input type="hidden" id="notice-id" th:value="${notice.getNoticeId()}">
+
+                <header class="mb-4">
+                    <input type="text" class="form-control" placeholder="제목" id="title" th:value="${notice.getTitle()}">
+                </header>
+                <section class="mb-5">
+                    <textarea class="form-control h-25" rows="10" placeholder="내용" id="content" th:text="${notice.getContent()}"></textarea>
+                </section>
+
+                <button th:if="${notice.getNoticeId()} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">수정</button>
+                <button th:if="${notice.getNoticeId()} == null" type="button" id="create-btn" class="btn btn-primary btn-sm">등록</button>
+            </article>
+        </div>
+    </div>
+</div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script>
+const modifyButton = document.getElementById('modify-btn');
+
+if (modifyButton) {
+    modifyButton.addEventListener('click', event => {
+        let params = new URLSearchParams(location.search);
+        let id = params.get('id');
+
+        fetch(`/notices/${id}`, {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value
+            })
+        })
+            .then(() => {
+                alert('수정이 완료되었습니다.');
+                location.replace(`/admin`);
+            })
+    })
+}
+
+// 등록 기능
+const createButton = document.getElementById("create-btn");
+
+if (createButton) {
+    createButton.addEventListener("click", (event) => {
+        fetch("/notices", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: document.getElementById("title").value,
+                content: document.getElementById("content").value,
+            })
+        }).then(() => {
+            alert("등록 완료되었습니다.");
+            location.replace("/admin");
+        })
+    })
+}
+</script>
+</body>
+</html>

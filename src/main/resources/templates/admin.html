@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ProfileeM 관리자 페이지</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+            <span class="fs-4">ProfileeM 관리자 페이지</span>
+        </a>
+
+        <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Features</a>
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Enterprise</a>
+            <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Support</a>
+            <a class="py-2 link-body-emphasis text-decoration-none" href="#">Pricing</a>
+        </nav>
+    </div>
+
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+        <h1 class="display-4 fw-normal text-body-emphasis">공지사항 관리</h1>
+        <p class="fs-5 text-body-secondary">공지사항을 생성, 수정, 삭제할 수 있습니다.</p>
+    </div>
+</header>
+<div class="container">
+    <button type="button" id="create-btn" th:onclick="|location.href='/admin/create'|"
+            class="btn btn-primary btn-lg mb-3">공지사항 생성</button>
+    <div class="row" th:each="notice : ${noticeTitleDates}">
+        <div class="card mb-3">
+            <div class="card-header" th:text="${notice.noticeId}"></div>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${notice.title}"></h5>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#noticeModal' + ${notice.noticeId}"
+                        th:data-notice-id="${notice.noticeId}">
+                    내용 확인
+                </button>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-secondary" id="logoutBtn">로그아웃</button>
+</div>
+
+<!-- Modal -->
+<div th:each="notice : ${noticeTitleDates}">
+    <div class="modal fade" th:id="'noticeModal' + ${notice.noticeId}" tabindex="-1" aria-labelledby="noticeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="noticeModalLabel">공지사항 상세</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="noticeTitle"></h5>
+                    <p id="noticeContent"></p>
+                    <p><small class="text-muted" id="noticeDate"></small></p>
+                </div>
+                <div class="modal-footer">
+<!--                    수정은 새로운 페이지로 폼 구현-->
+                    <button type="button" class="btn btn-primary" id="updateNotice" th:onclick="|location.href='@{/admin/create?id={noticeId} (noticeId=${notice.noticeId})}'|">수정</button>
+                    <button type="button" class="btn btn-secondary" id="deleteNotice" th:data-notice-id="${notice.noticeId}">삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const noticeModal = document.getElementById('noticeModal');
+        let currentNoticeId;
+
+        $('button[data-bs-toggle="modal"]').on('click', function (event) {
+            const noticeId = $(this).data('notice-id');
+            currentNoticeId = noticeId;
+
+            $.ajax({
+                url: `/notices/${noticeId}`,
+                method: 'GET',
+                success: function (data) {
+                    const modal = $('#noticeModal' + noticeId);
+                    modal.find('#noticeTitle').text(data.data.title);
+                    modal.find('#noticeContent').text(data.data.content);
+                    modal.find('#noticeDate').text(new Date(data.data.creationDate).toLocaleString());
+                    modal('show');
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        $('button[id="deleteNotice"]').on('click', function () {
+            const noticeId = $(this).data('notice-id');
+
+            $.ajax({
+                url: `/notices/${noticeId}`,
+                method: 'DELETE',
+                success: function (data) {
+                    alert('공지사항이 삭제되었습니다.');
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+    // 로그아웃 버튼 클릭 이벤트 처리
+    $(document).ready(function () {
+        $('#logoutBtn').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '/logout',
+                success: function (response) {
+                    window.location.href = '/login';
+                },
+                error: function (error) {
+                    console.error('로그아웃 오류:', error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

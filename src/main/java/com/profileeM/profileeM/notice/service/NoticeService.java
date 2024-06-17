@@ -3,6 +3,7 @@ package com.profileeM.profileeM.notice.service;
 import com.profileeM.profileeM.notice.domain.Notice;
 import com.profileeM.profileeM.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,16 +24,24 @@ public class NoticeService {
 
     // 공지사항 목록에서 제목과 생성일자를 가져오기
     public List<Notice.NoticeTitleDateDTO> findAllNoticeTitleDates() {
-        List<String> noticeIds = (List<String>) redisTemplate.opsForValue().get(NOTICE_LIST_CACHE_KEY);
-        if (noticeIds != null && !noticeIds.isEmpty()) {
-            return noticeIds.stream()
-                    .map(id -> (Notice) redisTemplate.opsForValue().get(NOTICE_CACHE_KEY_PREFIX + id))
-                    .map(notice -> new Notice.NoticeTitleDateDTO(notice.getNoticeId(), notice.getTitle(), notice.getCreationDate()))
-                    .collect(Collectors.toList());
-        } else {
+        try {
+            List<String> noticeIds = (List<String>) redisTemplate.opsForValue().get(NOTICE_LIST_CACHE_KEY);
+            if (noticeIds != null && !noticeIds.isEmpty()) {
+                return noticeIds.stream()
+                        .map(id -> (Notice) redisTemplate.opsForValue().get(NOTICE_CACHE_KEY_PREFIX + id))
+                        .map(notice -> new Notice.NoticeTitleDateDTO(notice.getNoticeId(), notice.getTitle(), notice.getCreationDate()))
+                        .collect(Collectors.toList());
+            } else {
+                List<Notice> notices = noticeRepository.findAll();
+                redisTemplate.opsForValue().set(NOTICE_LIST_CACHE_KEY, notices.stream().map(notice -> notice.getNoticeId().toString()).collect(Collectors.toList()));
+                notices.forEach(notice -> redisTemplate.opsForValue().set(NOTICE_CACHE_KEY_PREFIX + notice.getNoticeId(), notice));
+                return notices.stream()
+                        .map(notice -> new Notice.NoticeTitleDateDTO(notice.getNoticeId(), notice.getTitle(), notice.getCreationDate()))
+                        .collect(Collectors.toList());
+            }
+            // 개발환경에서 redis 접근 불가
+        } catch (RedisConnectionFailureException e) {
             List<Notice> notices = noticeRepository.findAll();
-            redisTemplate.opsForValue().set(NOTICE_LIST_CACHE_KEY, notices.stream().map(notice -> notice.getNoticeId().toString()).collect(Collectors.toList()));
-            notices.forEach(notice -> redisTemplate.opsForValue().set(NOTICE_CACHE_KEY_PREFIX + notice.getNoticeId(), notice));
             return notices.stream()
                     .map(notice -> new Notice.NoticeTitleDateDTO(notice.getNoticeId(), notice.getTitle(), notice.getCreationDate()))
                     .collect(Collectors.toList());
@@ -41,13 +50,19 @@ public class NoticeService {
 
     // 공지사항 세부 내용 가져오기
     public Optional<Notice> findNoticeById(Long noticeId) {
-        Notice cachedNotice = (Notice) redisTemplate.opsForValue().get(NOTICE_CACHE_KEY_PREFIX + noticeId);
-        if (cachedNotice != null) {
-            return Optional.of(cachedNotice);
-        } else {
-            Optional<Notice> noticeOptional = noticeRepository.findById(noticeId);
-            noticeOptional.ifPresent(notice -> redisTemplate.opsForValue().set(NOTICE_CACHE_KEY_PREFIX + notice.getNoticeId(), notice));
-            return noticeOptional;
+        try {
+            Notice cachedNotice = (Notice) redisTemplate.opsForValue().get(NOTICE_CACHE_KEY_PREFIX + noticeId);
+            if (cachedNotice != null) {
+                return Optional.of(cachedNotice);
+            } else {
+                Optional<Notice> noticeOptional = noticeRepository.findById(noticeId);
+                noticeOptional.ifPresent(notice -> redisTemplate.opsForValue().set(NOTICE_CACHE_KEY_PREFIX + notice.getNoticeId(), notice));
+                return noticeOptional;
+            }
+            // 개발환경에서 redis 접근 불가
+        } catch (RedisConnectionFailureException e) {
+            return noticeRepository.findById(noticeId);
+
         }
     }
 

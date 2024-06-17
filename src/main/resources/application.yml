@@ -24,6 +24,13 @@ spring:
       host: ENC(vk0aMA/mgJIgxfAMuHcl4vL+tnfXHdLu1yaT9MIE25nSNZbNjcim8ydnDv3z5g2ztk2orm63rlymxdAwY74PdwmOYefWkd/x)
       port: 6379
 
+  # thymeleaf
+  thymeleaf:
+    cache: false
+    check-template: true
+    prefix: classpath:/templates/
+    suffix: .html
+
 # 카카오 로그인
 oauth:
   kakao:
@@ -34,3 +41,4 @@ jwt:
   secret: ENC(8NEpnmhCTRlaUv9EScYdkT3czu2ociz/tFqusPWVuWLQm0YZoGPIWRW5f2OnWd9r+2P8+ihWumC6IUCPfC2NYZ3ARz8PgQ0iZjR7O2C0EyI+EGWgZvNvbhTMN2UwYYoZV44BbQhioNtbZcYyNEGQrxSh8H7T4OiHtpn/TJzeXmqNlAiixxJV6Xz0J2YxJKXT)
   access-token-time: ENC(GS/+4wj+/UhdiLcHEraIX2MiDVdUYE07)
   refresh-token-time: ENC(DGbVhdWv3CDOp9QIlJpCfHDUibIJpn8A)
+

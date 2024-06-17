@@ -31,8 +31,7 @@ public class SecurityConfig {
                                 .logoutSuccessUrl("/login")
                                 .invalidateHttpSession(true)
                                 .permitAll()
-                )
-                .csrf(csrf -> csrf.disable()); // 개발 중이라면 비활성화 가능. 운영 환경에서는 활성화 필요
+                );
 
         return http.build();
     }

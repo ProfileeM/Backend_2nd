@@ -31,6 +31,7 @@
         <div class="col-lg-8">
             <article>
                 <input type="hidden" id="notice-id" th:value="${notice.getNoticeId()}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
                 <header class="mb-4">
                     <input type="text" class="form-control" placeholder="제목" id="title" th:value="${notice.getTitle()}">

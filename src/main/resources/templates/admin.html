@@ -12,7 +12,7 @@
 <body>
 <header>
     <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+        <a href="/admin" class="d-flex align-items-center link-body-emphasis text-decoration-none">
             <span class="fs-4">ProfileeM 관리자 페이지</span>
         </a>
 
@@ -90,7 +90,6 @@
                     modal.find('#noticeTitle').text(data.data.title);
                     modal.find('#noticeContent').text(data.data.content);
                     modal.find('#noticeDate').text(new Date(data.data.creationDate).toLocaleString());
-                    modal('show');
                 },
                 error: function (error) {
                     console.error('Error:', error);
@@ -126,7 +125,7 @@
                     xhr.setRequestHeader(csrfHeader, csrfToken);
                 },
                 success: function (response) {
-                    window.location.href = '/login';
+                    location.replace(`/admin`);
                 },
                 error: function (error) {
                     console.error('로그아웃 오류:', error);

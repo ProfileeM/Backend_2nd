@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ProfileeM 관리자 페이지</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <!-- CSRF Token -->
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <header>
     <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+        <a href="/admin" class="d-flex align-items-center link-body-emphasis text-decoration-none">
             <span class="fs-4">ProfileeM 관리자 페이지</span>
         </a>
 
@@ -34,7 +31,7 @@
         <div class="col-lg-8">
             <article>
                 <input type="hidden" id="notice-id" th:value="${notice.getNoticeId()}">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                 <header class="mb-4">
                     <input type="text" class="form-control" placeholder="제목" id="title" th:value="${notice.getTitle()}">
@@ -53,12 +50,12 @@
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script>
 const modifyButton = document.getElementById('modify-btn');
+const csrfToken = document.getElementById('csrf').value;
 
 if (modifyButton) {
     modifyButton.addEventListener('click', event => {
         let params = new URLSearchParams(location.search);
         let id = params.get('id');
-        const csrfToken = document.getElementById('csrfToken').value;
 
         fetch(`/notices/${id}`, {
             method: 'PUT',
@@ -83,7 +80,7 @@ const createButton = document.getElementById("create-btn");
 
 if (createButton) {
     createButton.addEventListener("click", (event) => {
-        const csrfToken = document.getElementById('csrfToken').value;
+
         fetch("/notices", {
             method: "POST",
             headers: {

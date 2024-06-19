@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ProfileeM 관리자 페이지</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- CSRF Token -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <header>
@@ -114,9 +117,14 @@
     // 로그아웃 버튼 클릭 이벤트 처리
     $(document).ready(function () {
         $('#logoutBtn').click(function () {
+            const csrfToken = $('meta[name="_csrf"]').attr('content');
+            const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
             $.ajax({
                 type: 'POST',
                 url: '/logout',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
                 success: function (response) {
                     window.location.href = '/login';
                 },

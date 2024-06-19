@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ProfileeM 관리자 페이지</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- CSRF Token -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <header>
@@ -55,11 +58,13 @@ if (modifyButton) {
     modifyButton.addEventListener('click', event => {
         let params = new URLSearchParams(location.search);
         let id = params.get('id');
+        const csrfToken = document.getElementById('csrfToken').value;
 
         fetch(`/notices/${id}`, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
             body: JSON.stringify({
                 title: document.getElementById('title').value,
@@ -78,10 +83,12 @@ const createButton = document.getElementById("create-btn");
 
 if (createButton) {
     createButton.addEventListener("click", (event) => {
+        const csrfToken = document.getElementById('csrfToken').value;
         fetch("/notices", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
             body: JSON.stringify({
                 title: document.getElementById("title").value,
